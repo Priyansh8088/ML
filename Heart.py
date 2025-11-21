@@ -69,15 +69,9 @@ if missing_values.sum() > 0:
 else:
     print("✓ No missing values found in dataset\n")
 
-# ============================================================================
-# TASK (B) - PART 2: STANDARDIZE NUMERICAL FEATURES
-# ============================================================================
-print("=" * 70)
-print("TASK (B) - PART 2: STANDARDIZATION OF FEATURES")
-print("=" * 70)
 
-X = df.iloc[:, :-1]  # All features except target
-y = df.iloc[:, -1]  # Target column
+X = df.iloc[:, :-1]
+y = df.iloc[:, -1]
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
@@ -89,12 +83,7 @@ print(f"Original feature std (first 3): {X.iloc[:, :3].std().values}")
 print(f"Scaled feature std (first 3): {X_scaled.iloc[:, :3].std().values}")
 print("✓ Features standardized using StandardScaler\n")
 
-# ============================================================================
-# TASK (B) - PART 3: TRAIN-TEST SPLIT (70-30 and 80-20)
-# ============================================================================
-print("=" * 70)
-print("TASK (B) - PART 3: TRAIN-TEST SPLIT")
-print("=" * 70)
+
 
 # Split 1: 70-30
 X_train_70, X_test_30, y_train_70, y_test_30 = train_test_split(
@@ -113,29 +102,14 @@ print(f"  Train set: {X_train_80.shape[0]} samples")
 print(f"  Test set: {X_test_20.shape[0]} samples")
 print("✓ Dataset split completed\n")
 
-# ============================================================================
-# TASK (C) - PART 1: TRAIN LOGISTIC REGRESSION (70-30 split)
-# ============================================================================
-print("=" * 70)
-print("TASK (C) - PART 1: LOGISTIC REGRESSION TRAINING (70-30 split)")
-print("=" * 70)
 
 lr_model_70 = LogisticRegression(max_iter=1000, random_state=42)
 lr_model_70.fit(X_train_70, y_train_70)
-
 y_pred_70 = lr_model_70.predict(X_test_30)
-
-print("✓ Model trained on 70-30 split")
 print(f"Model coefficients shape: {lr_model_70.coef_.shape}\n")
 
-# ============================================================================
-# TASK (C) - PART 2: SCATTER PLOT - AGE VS CHOLESTEROL
-# ============================================================================
-print("=" * 70)
-print("TASK (C) - PART 2: AGE vs CHOLESTEROL VISUALIZATION")
-print("=" * 70)
 
-# Using original (unscaled) data for better interpretability
+
 X_original = df.iloc[:, :-1]
 y_original = df.iloc[:, -1]
 
@@ -145,7 +119,7 @@ scatter = plt.scatter(X_original['age'], X_original['cholesterol'],
                       c=colors, alpha=0.6, s=100, edgecolors='black', linewidth=0.5)
 
 plt.xlabel('Age', fontsize=12)
-plt.ylabel('Cholesterol', fontsize=12)
+plt.ylabel('Chol', fontsize=12)
 plt.title('Age vs Cholesterol (Heart Disease Status)', fontsize=14, fontweight='bold')
 plt.grid(True, alpha=0.3)
 
@@ -158,14 +132,9 @@ plt.legend(handles=handles, fontsize=11, loc='upper right')
 plt.tight_layout()
 plt.savefig('age_vs_cholesterol.png', dpi=100, bbox_inches='tight')
 plt.show()
-print("✓ Scatter plot saved as 'age_vs_cholesterol.png'\n")
 
-# ============================================================================
-# TASK (D) - PART 1: EVALUATION METRICS (70-30 split)
-# ============================================================================
-print("=" * 70)
-print("TASK (D) - MODEL EVALUATION (70-30 split)")
-print("=" * 70)
+
+
 
 accuracy_70 = accuracy_score(y_test_30, y_pred_70)
 precision_70 = precision_score(y_test_30, y_pred_70)
@@ -179,12 +148,7 @@ print(f"Recall:    {recall_70:.4f}")
 print(f"F1-Score:  {f1_70:.4f}")
 print(f"AUC Score: {auc_70:.4f}\n")
 
-# ============================================================================
-# TASK (D) - PART 2: EVALUATION METRICS (80-20 split)
-# ============================================================================
-print("=" * 70)
-print("TASK (D) - MODEL EVALUATION (80-20 split)")
-print("=" * 70)
+
 
 lr_model_80 = LogisticRegression(max_iter=1000, random_state=42)
 lr_model_80.fit(X_train_80, y_train_80)
@@ -202,12 +166,7 @@ print(f"Recall:    {recall_80:.4f}")
 print(f"F1-Score:  {f1_80:.4f}")
 print(f"AUC Score: {auc_80:.4f}\n")
 
-# ============================================================================
-# TASK (D) - PART 3: COMPARISON & SUMMARY
-# ============================================================================
-print("=" * 70)
-print("COMPARISON: 70-30 vs 80-20 SPLITS")
-print("=" * 70)
+
 
 comparison_df = pd.DataFrame({
     '70-30 Split': [accuracy_70, precision_70, recall_70, f1_70, auc_70],
@@ -217,19 +176,17 @@ comparison_df = pd.DataFrame({
 print(comparison_df)
 print()
 
-# ============================================================================
-# CONFUSION MATRIX VISUALIZATION
-# ============================================================================
+
 fig, axes = plt.subplots(1, 2, figsize=(12, 4))
 
-# 70-30 split
+
 cm_70 = confusion_matrix(y_test_30, y_pred_70)
 sns.heatmap(cm_70, annot=True, fmt='d', cmap='Blues', ax=axes[0], cbar=False)
 axes[0].set_title('Confusion Matrix (70-30 Split)', fontweight='bold')
 axes[0].set_ylabel('True Label')
 axes[0].set_xlabel('Predicted Label')
 
-# 80-20 split
+
 cm_80 = confusion_matrix(y_test_20, y_pred_80)
 sns.heatmap(cm_80, annot=True, fmt='d', cmap='Blues', ax=axes[1], cbar=False)
 axes[1].set_title('Confusion Matrix (80-20 Split)', fontweight='bold')
@@ -240,77 +197,3 @@ plt.tight_layout()
 plt.savefig('confusion_matrices.png', dpi=100, bbox_inches='tight')
 plt.show()
 print("✓ Confusion matrices saved as 'confusion_matrices.png'\n")
-
-# ============================================================================
-# SUMMARY & INSIGHTS
-# ============================================================================
-print("=" * 70)
-print("SUMMARY & MODEL INSIGHTS")
-print("=" * 70)
-
-print("""
-LOGISTIC REGRESSION PERFORMANCE:
-─────────────────────────────────────────────────────────────────
-
-1. ACCURACY:
-   • 70-30 Split: {:.2%}
-   • 80-20 Split: {:.2%}
-
-   The model shows MODERATE accuracy. The slight variation between splits
-   suggests the model is reasonably stable but not exceptional.
-
-2. PRECISION & RECALL TRADE-OFF:
-   • 70-30 Split - Precision: {:.2%}, Recall: {:.2%}
-   • 80-20 Split - Precision: {:.2%}, Recall: {:.2%}
-
-   Logistic Regression shows a RECALL bias, which means it's better at
-   identifying actual disease cases but produces more false positives.
-
-3. F1-SCORE (Harmonic Mean):
-   • 70-30 Split: {:.2%}
-   • 80-20 Split: {:.2%}
-
-   The F1-score indicates MODERATE balance between precision and recall.
-
-4. AUC SCORE (Area Under Curve):
-   • 70-30 Split: {:.4f}
-   • 80-20 Split: {:.4f}
-
-   The AUC is a STRONG indicator of classification ability across
-   different thresholds.
-
-─────────────────────────────────────────────────────────────────
-
-RECOMMENDATIONS FOR IMPROVED ACCURACY & ROBUSTNESS:
-─────────────────────────────────────────────────────────────────
-
-1. TREE-BASED MODELS (Recommended):
-   • Random Forest: Better handles non-linear relationships
-   • Gradient Boosting (XGBoost, LightGBM): Superior performance
-   • Decision Trees: Good for interpretability
-
-2. ENSEMBLE METHODS:
-   • Voting Classifier: Combines multiple models
-   • Stacking: Learns optimal combination of models
-
-3. ADVANCED TECHNIQUES:
-   • SVM with RBF kernel: Non-linear classification
-   • Neural Networks: Can capture complex patterns
-   • K-Nearest Neighbors: Instance-based learning
-
-4. DATA IMPROVEMENTS:
-   • Feature engineering: Create meaningful features
-   • Handle class imbalance: SMOTE or class weights
-   • Hyperparameter tuning: GridSearchCV or RandomizedSearchCV
-   • Cross-validation: K-fold for robust evaluation
-
-5. DOMAIN-SPECIFIC APPROACH:
-   • Since recall is important (identifying disease), consider
-     lowering the decision threshold to increase sensitivity
-   • Medical context: False negatives (missing disease) > False positives
-
-─────────────────────────────────────────────────────────────────
-""".format(accuracy_70, accuracy_80, precision_70, recall_70,
-           precision_80, recall_80, f1_70, f1_80, auc_70, auc_80))
-
-print("✓ Analysis Complete!")
